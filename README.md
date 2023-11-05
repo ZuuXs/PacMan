@@ -48,11 +48,11 @@ pacgommes.</p>
 ## Regles
 <ul> 
   <li>Initialement il a trois vies.</li>
-  <li>Si le joueur d´epasse les 5000 points, il obtient une vie supplémentaire</li>
-  <li>Chaque fantˆome se d´eplace dans une direction jusqu’`a ce qu’il atteigne un mur, puis choisit une nouvelle direction al´eatoirement.</li>
-  <li>Quand le pacman est invisible et le pacman pourra traverser les fantˆomes sans perdre de vie.</li>  
-  <li>Quand le pacman est un superpacman, les fantˆomes deviennent vuln´erables. Dans ce cas, ils se d´eplacent deux fois plus lentement et ils reviennent au centre du labyrinthe si ils sont touch´es par le pacman.</li>
-  <li>Le jeu se termine quand il n’y a plus de pacgommes et la partie est gagn´ee ou quand le pacman a perdu toutes ses vies et la partie est perdue.</li>
+  <li>Si le joueur dépasse les 5000 points, il obtient une vie supplémentaire</li>
+  <li>Chaque fantôme se déplace dans une direction jusqu’à ce qu’il atteigne un mur, puis choisit une nouvelle direction aléatoirement.</li>
+  <li>Quand le pacman est invisible et le pacman pourra traverser les fantômes sans perdre de vie.</li>  
+  <li>Quand le pacman est un superpacman, les fantômes deviennent vulnérables. Dans ce cas, ils se déplacent deux fois plus lentement et ils reviennent au centre du labyrinthe si ils sont touchés par le pacman.</li>
+  <li>Le jeu se termine quand il n’y a plus de pacgommes et la partie est gagnée ou quand le pacman a perdu toutes ses vies et la partie est perdue.</li>
 </ul>
 <br/>
 
