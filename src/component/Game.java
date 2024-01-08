@@ -3,7 +3,6 @@ import javax.swing.*;
 
 import coordinate.Coordinate;
 import coordinate.Direction;
-import state.phantome.*;
 
 import java.awt.*;
 import java.util.Random;
@@ -81,8 +80,8 @@ public class Game extends JPanel {
 
         //Lancement des phantomes
         movePhantomeTimer = new Timer(getPhantoms()[0].getDelay(), e -> {
-            for (int x = 0; x < getPhantoms().length; x++) {
-                movePhantom(getPhantoms()[x]);
+            for (Phantome ghost : getPhantoms()) {
+                movePhantom(ghost);
             }
         });
         
@@ -118,16 +117,9 @@ public class Game extends JPanel {
     }
 
 
-    
-
-
-    public void movePacman() {
-        //Recuperation de la position du pacman sur le tableau
-        int nextPosX = pacman.getCoordinates().posXYToBoard().getX();
-        int nextPosY = pacman.getCoordinates().posXYToBoard().getY();
-        
-        //Direction du pacman et calcul de la fonction du wraparound
-        switch (pacman.getCurrentDirection()) {
+    public int[] moveEntity(int nextPosX, int nextPosY, Direction direction) {
+        //Direction et calcul de la fonction du wraparound
+        switch (direction) {
             case UP:
                 nextPosY = (nextPosY == 0) ? 24 : (nextPosY - 1);
                 break;
@@ -143,6 +135,16 @@ public class Game extends JPanel {
             default:
                 break;
         }
+
+        return (new int[] { nextPosX, nextPosY });
+    }
+
+    //Fonction du mouvement du pacman
+    public void movePacman() {
+        int[] nextCase = moveEntity(pacman.getCoordinates().posXYToBoard().getX(), pacman.getCoordinates().posXYToBoard().getY(), pacman.getCurrentDirection());
+        //Recuperation de la position du pacman sur le tableau
+        int nextPosX = nextCase[0];
+        int nextPosY = nextCase[1];
         
         if (labyrinthe.getBoard()[nextPosY][nextPosX] != 1) {
             pacman.setCoordinates(new Coordinate(nextPosX, nextPosY).boardToPosXY());
@@ -180,27 +182,12 @@ public class Game extends JPanel {
         }
     }
 
-
+    //Fonction du mouvement des phantomes
     private void movePhantom(Phantome phantome) {
-        int nextPosX = phantome.getCoordinates().posXYToBoard().getX();
-        int nextPosY = phantome.getCoordinates().posXYToBoard().getY();
-
-        switch (phantome.getCurrentDirection()) {
-            case UP:
-                nextPosY = (nextPosY == 0) ? 24 : (nextPosY - 1);
-                break;
-            case DOWN:
-                nextPosY = (nextPosY + 1) % labyrinthe.getLength();
-                break;
-            case LEFT:
-                nextPosX = (nextPosX == 0) ? 24 : (nextPosX - 1);
-                break;
-            case RIGHT:
-                nextPosX = (nextPosX + 1) % labyrinthe.getLength();
-                break;
-            default:
-                break;
-        }
+        
+        int[] nextCase = moveEntity(phantome.getCoordinates().posXYToBoard().getX(), phantome.getCoordinates().posXYToBoard().getY(), phantome.getCurrentDirection());
+        int nextPosX = nextCase[0];
+        int nextPosY = nextCase[1];
 
         if (labyrinthe.getBoard()[nextPosY][nextPosX] != 1) {
             phantome.setCoordinates(new Coordinate(nextPosX, nextPosY).boardToPosXY());
@@ -215,11 +202,12 @@ public class Game extends JPanel {
     }
 
 
+    //Fonction pour la verification de l'etat du jeu (Collisions/Fin de partie)
     public void check() {
         if (!(pacman.getState() instanceof state.pacman.InvisibleState)) {
             Phantome[] tabPhantoms = getPhantoms();
             for (int j = 0; j < tabPhantoms.length; j++) {
-                //Si le pacman se trouve a la meme case du phantome
+                //Si le pacman se trouve a la meme position du phantome
                 if (pacman.getCoordinates().getX() == tabPhantoms[j].getCoordinates().getX() && pacman.getCoordinates().getY() == tabPhantoms[j].getCoordinates().getY()) {
                     //Si le fantome est en etat vulnerable il se fait manger donc reinitialisation
                     if (tabPhantoms[j].getVulnerable()) {
@@ -250,7 +238,6 @@ public class Game extends JPanel {
 
     //Activation du super pacman
     public void superPac() {
-
         //Slow Fantomes
         movePhantomeTimer.setDelay(500);
 
@@ -266,8 +253,8 @@ public class Game extends JPanel {
     //Reinitialisation des objets
     public void reset() {
         pacman.reset();
-        for (int i = 0; i < getPhantoms().length; i++) {
-            getPhantoms()[i].reset();
+        for (Phantome ghost : getPhantoms()) {
+            ghost.reset();
         }
         movePhantomeTimer.stop();
         Timer waiting= new Timer(2000,e -> movePhantomeTimer.start());
