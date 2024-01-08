@@ -1,16 +1,21 @@
 package component;
 import javax.swing.*;
 
-import coordinate.Coordinate;
-import coordinate.Direction;
+import coordinate.*;
+import observer.*;
+import state.pacman.PacmanState;
+import state.pacman.SuperState;
 import state.phantome.NormalState;
 import state.phantome.PhantomeState;
+import state.phantome.VulnerableState;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.Random;
 
-public class Phantome extends JComponent {
+public class Phantome extends JComponent implements Observer {
     private final Coordinate DEFAULT_COORDINATE;
+
     private Direction currentDirection;
     private Boolean vulnerable;
     private int delay;
@@ -18,7 +23,6 @@ public class Phantome extends JComponent {
     private Timer moveTimer;
     private Color ghostColor;
     private PhantomeState currentState;
-
     private Coordinate coordinates;
 
 
@@ -90,12 +94,26 @@ public class Phantome extends JComponent {
         currentState.update(this);
     }
     
-    public void reset(){
+    public void reset() {
         currentState = new NormalState();
         currentState.update(this);
         coordinates = DEFAULT_COORDINATE;
     }
 
+    
+    // Observer interface method
+    @Override
+    public void updateObserver(Observable o) {
+        if (o instanceof Pacman){
+            PacmanState pacmanState= ((Pacman)o).getState();
+        
+            if (pacmanState instanceof SuperState) {
+                setState(new VulnerableState());
+            } else {
+                setState(new NormalState());
+            }
+        }
+    }
 
     public void ghostModel(Graphics g) {
         // Draw the rounded top part

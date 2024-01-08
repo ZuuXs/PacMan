@@ -28,6 +28,11 @@ public class Game extends JPanel {
         redPhantom = new Phantome(Color.RED, 13, 12);
         pinkPhantom = new Phantome(Color.PINK, 14, 12);
 
+        pacman.registerObserver(cyanPhantom);
+        pacman.registerObserver(orangePhantom);
+        pacman.registerObserver(redPhantom);
+        pacman.registerObserver(pinkPhantom);
+
         //Creation du paneau
         setLayout(new BorderLayout());
         JLayeredPane layeredPane = new JLayeredPane();
@@ -246,18 +251,11 @@ public class Game extends JPanel {
     //Activation du super pacman
     public void superPac() {
 
-        //Fantomes vulnerables
-        for (int i = 0; i < getPhantoms().length; i++) {
-            getPhantoms()[i].setState(new VulnerableState());
-        }
         //Slow Fantomes
         movePhantomeTimer.setDelay(500);
 
         //Timer du pouvoir (7 secondes)
         new Timer(7000, e -> {
-            for (int i = 0; i < getPhantoms().length; i++) {
-                getPhantoms()[i].setState(new state.phantome.NormalState());
-            }
             movePhantomeTimer.setDelay(250);
             pacman.setState(new state.pacman.NormalState());
         }).start();

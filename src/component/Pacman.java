@@ -1,22 +1,24 @@
 package component;
 import javax.swing.*;
 
-import coordinate.Coordinate;
-import coordinate.Direction;
+import coordinate.*;
+import observer.*;
 import state.pacman.PacmanState;
 import state.pacman.NormalState;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.List;
+import java.util.ArrayList;
 
-import java.awt.*;
-
-
-public class Pacman extends JComponent {
+public class Pacman extends JComponent implements Observable{
 
     final private Color PACMAN_COLOR = Color.YELLOW;
     final private int PACMAN_SIZE = 20;
     final private int DEFAULT_X =12;
-    final private int DEFAULT_Y =19;
+    final private int DEFAULT_Y = 19;
     
+    private List<Observer> observers = new ArrayList<>();
     private PacmanState currentState;
     private int animationHelper=0;
     private Direction currentDirection;
@@ -77,13 +79,23 @@ public class Pacman extends JComponent {
         return currentState;
     }
 
-    public String getPower(){
+    public String getPower() {
         return power;
     }
+
+    public Boolean getSuperPac() {
+        return superPac;
+    }
+    
+    public Boolean getVisible(){
+        return isVisible;
+    }
+
 
     //Setters
     public void setState(PacmanState state) {
         this.currentState = state;
+        notifyObservers();
     }
 
     public void setVisible(boolean isVisible) {
@@ -139,6 +151,23 @@ public class Pacman extends JComponent {
         repaint();
     }
 
+    // Observable interface methods
+    @Override
+    public void registerObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.updateObserver(this);
+        }
+    }
     
     private void calculateRenderParameters() {
 
